@@ -27,8 +27,8 @@ This repository contains small C++ programs created while learning programming a
 
 ## 👤 Author
 
-**John Saavedra**
-GitHub: [https://github.com/jsaavedra-code](https://github.com/jsaavedra-code)
+John Saavedra  
+GitHub: https://github.com/jsaavedra-code
 
 ---
 
