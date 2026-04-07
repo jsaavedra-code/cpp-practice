@@ -1,41 +1,51 @@
 #include <iostream>
-using namespace std;
+#include <string>
+#include <limits>
 
 // I decided to limit the system to 10 products for simplicity
-// Each array stores one attribute of every product
-int product_id[10];
-string product_name[10];
-int product_quantity[10];
-double product_price[10];
+const int MAX_PRODUCTS = 10;
+
+struct Product
+{
+    int id;
+    std::string name;
+    int quantity;
+    double price;
+};
+
+Product products[MAX_PRODUCTS];
 
 // This keeps track of how many products are currently stored
 int count = 0;
 
 // Adds a new product to the system
 // Uses "count" as the position where the new product will be stored
-void addProduct() 
+void addProduct()
 {   
     // If inventory is full, stop immediately
-    if (count >= 10)
+    if (count >= MAX_PRODUCTS)
     {
-        cout << "Inventory full \n";
+        std::cout << "Inventory full \n";
         return;  // No need for else, we exit early
     }
 
-    cout << "Enter the details of the product you want to add: " << endl;
+    std::cout << "Enter the details of the product you want to add: " << std::endl;
 
     // Store each value at index [count]
-    cout << "Enter the id of the product:";
-    cin >> product_id[count];
+    std::cout << "Enter the id of the product: ";
+    std::cin >> products[count].id;
 
-    cout << "Enter the name of the product:";
-    cin >> product_name[count];
+    // Clear leftover newline before getline
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-    cout << "Enter the quantity of the product:";
-    cin >> product_quantity[count];
+    std::cout << "Enter the name of the product: ";
+    std::getline(std::cin, products[count].name);
 
-    cout << "Enter the price of the product:";
-    cin >> product_price[count];
+    std::cout << "Enter the quantity of the product: ";
+    std::cin >> products[count].quantity;
+
+    std::cout << "Enter the price of the product: ";
+    std::cin >> products[count].price;
 
     // Move to next available slot
     count++;
@@ -43,18 +53,18 @@ void addProduct()
 
 // Displays all products currently stored
 // Loops from 0 to count (only valid products)
-void displayProducts() 
+void displayProducts()
 {
     for (int i = 0; i < count; i++)
     {
-        cout << "Product " << i + 1 << "\n";
+        std::cout << "Product: " << i + 1 << "\n";
 
-        cout << "id: " << product_id[i] << "\n";
-        cout << "Name: " << product_name[i] << "\n";
-        cout << "Quantity: " << product_quantity[i] << "\n";
-        cout << "Price: " << product_price[i] << "\n";
+        std::cout << "id: " << products[i].id << "\n";
+        std::cout << "Name: " << products[i].name << "\n";
+        std::cout << "Quantity: " << products[i].quantity << "\n";
+        std::cout << "Price: " << products[i].price << "\n";
 
-        cout << "-----------------------------" << endl;
+        std::cout << "-----------------------------" << std::endl;
     }
 }
 
@@ -64,22 +74,22 @@ void searchProduct()
     int id;
     bool found = false;  // helps track if we found it or not
 
-    cout << "Enter the id of the product you want to find: ";
-    cin >> id;
+    std::cout << "Enter the id of the product you want to find: ";
+    std::cin >> id;
 
     // Check each stored product
     for (int j = 0; j < count; j++)
     {
-        if (id == product_id[j])
+        if (id == products[j].id)
         {
-            cout << "The product you are looking for is: \n";
+            std::cout << "The product you are looking for is: \n";
 
-            cout << "id: " << product_id[j] << "\n";
-            cout << "Name: " << product_name[j] << "\n";
-            cout << "Quantity: " << product_quantity[j] << "\n";
-            cout << "Price: " << product_price[j] << "\n";
+            std::cout << "id: " << products[j].id << "\n";
+            std::cout << "Name: " << products[j].name << "\n";
+            std::cout << "Quantity: " << products[j].quantity << "\n";
+            std::cout << "Price: " << products[j].price << "\n";
 
-            cout << "-----------------------------" << endl;
+            std::cout << "-----------------------------" << std::endl;
 
             found = true;
             return;  // stop once we find it
@@ -87,9 +97,9 @@ void searchProduct()
     }
 
     // If loop ends and nothing matched
-    if (found == false)
+    if (!found)
     {
-        cout << "Product not found" << endl;
+        std::cout << "Product not found" << std::endl;
         return;
     }
 }
@@ -100,49 +110,52 @@ void updateProduct()
     int id;
     bool found = false;
 
-    cout << "Enter the id of the product you want to update: ";
-    cin >> id;
+    std::cout << "Enter the id of the product you want to update: ";
+    std::cin >> id;
 
     // Find the product first
     for (int k = 0; k < count; k++)
     {
-        if (id == product_id[k])
+        if (id == products[k].id)
         {
             // Show current data before updating
-            cout << "The product you want to update is: \n";
+            std::cout << "The product you want to update is: \n";
 
-            cout << "id: " << product_id[k] << "\n";
-            cout << "Name: " << product_name[k] << "\n";
-            cout << "Quantity: " << product_quantity[k] << "\n";
-            cout << "Price: " << product_price[k] << "\n";
+            std::cout << "id: " << products[k].id << "\n";
+            std::cout << "Name: " << products[k].name << "\n";
+            std::cout << "Quantity: " << products[k].quantity << "\n";
+            std::cout << "Price: " << products[k].price << "\n";
 
-            cout << "-----------------------------" << endl;
+            std::cout << "-----------------------------" << std::endl;
 
             // Replace values at same index (no new product, just overwrite)
-            cout << "Enter the new details to update the product: " << endl;
+            std::cout << "Enter the new details to update the product: " << std::endl;
 
-            cout << "Enter the id of the product:";
-            cin >> product_id[k];
+            std::cout << "Enter a new id: ";
+            std::cin >> products[k].id;
 
-            cout << "Enter the name of the product:";
-            cin >> product_name[k];
+            // Clear leftover newline before getline
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-            cout << "Enter the quantity of the product:";
-            cin >> product_quantity[k];
+            std::cout << "Enter a new name: ";
+            std::getline(std::cin, products[k].name);
 
-            cout << "Enter the price of the product:";
-            cin >> product_price[k];
+            std::cout << "Enter a new quantity: ";
+            std::cin >> products[k].quantity;
 
-            cout << "Product updated successfully" << endl; 
+            std::cout << "Enter a new price: ";
+            std::cin >> products[k].price;
+
+            std::cout << "Product updated successfully" << std::endl;
 
             found = true;
             return;
         }
     }
 
-    if (found == false)
+    if (!found)
     {
-        cout << "Product not found, unable to update" << endl;
+        std::cout << "Product not found, unable to update" << std::endl;
         return;
     }
 }
@@ -153,39 +166,36 @@ void deleteProduct()
     int id;
     bool found = false;
 
-    cout << "Enter the id of the product you want to delete: ";
-    cin >> id;
+    std::cout << "Enter the id of the product you want to delete: ";
+    std::cin >> id;
 
     // Find the product index
     for (int m = 0; m < count; m++)
     {
-        if (id == product_id[m])
+        if (id == products[m].id)
         {
             // Shift everything left to "remove" the product
             // This avoids leaving empty gaps in the arrays
             for (int n = m; n < count - 1; n++)
             {
-                product_id[n] = product_id[n + 1];
-                product_name[n] = product_name[n + 1];
-                product_quantity[n] = product_quantity[n + 1];
-                product_price[n] = product_price[n + 1];
+                products[n] = products[n + 1];
             }
 
             // Reduce total number of products
             count--;
 
-            cout << "Product successfully deleted \n";
-            cout << "-----------------------------" << endl;
+            std::cout << "Product successfully deleted \n";
+            std::cout << "-----------------------------" << std::endl;
 
             found = true;
             return;
         }
     }
 
-    if (found == false)
+    if (!found)
     {
-        cout << "Product not found, there is nothing to delete" << endl;
-        return; 
+        std::cout << "Product not found, there is nothing to delete" << std::endl;
+        return;
     }
 }
 
@@ -197,16 +207,16 @@ int main()
     // Runs continuously until user chooses to exit
     while (true)
     {
-        cout << "Welcome to the Inventory Management System" << endl;
-        cout << "1. Add Product" << endl;
-        cout << "2. Display Products" << endl;
-        cout << "3. Search Product" << endl;
-        cout << "4. Update Product" << endl;
-        cout << "5. Delete Product" << endl;
-        cout << "6. Exit" << endl;
+        std::cout << "Welcome to the Inventory Management System" << std::endl;
+        std::cout << "1. Add Product" << std::endl;
+        std::cout << "2. Display Products" << std::endl;
+        std::cout << "3. Search Product" << std::endl;
+        std::cout << "4. Update Product" << std::endl;
+        std::cout << "5. Delete Product" << std::endl;
+        std::cout << "6. Exit" << std::endl;
 
-        cout << "Please enter an option: ";
-        cin >> option; 
+        std::cout << "Please enter an option: ";
+        std::cin >> option;
 
         // Each option triggers a specific function
         switch (option)
@@ -214,7 +224,7 @@ int main()
             case 1:
                 addProduct();
                 break;
-            
+
             case 2:
                 displayProducts();
                 break;
@@ -232,12 +242,12 @@ int main()
                 break;
 
             case 6:
-                cout << "Thanks for using my program \n";
-                cout << "Exiting..." << endl;
+                std::cout << "Thanks for using my program \n";
+                std::cout << "Exiting..." << std::endl;
                 return 0;  // ends program completely
 
             default:
-                cout << "Please enter a valid option" << endl;
+                std::cout << "Please enter a valid option" << std::endl;
         }
     }
 }
