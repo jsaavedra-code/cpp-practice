@@ -2,7 +2,6 @@
 #include <string>
 #include <limits>
 
-// I decided to limit the system to 10 products for simplicity
 const int MAX_PRODUCTS = 10;
 
 struct Product
@@ -14,211 +13,226 @@ struct Product
 };
 
 Product products[MAX_PRODUCTS];
-
-// This keeps track of how many products are currently stored
 int count = 0;
 
-// Adds a new product to the system
-// Uses "count" as the position where the new product will be stored
-void addProduct()
-{   
-    // If inventory is full, stop immediately
-    if (count >= MAX_PRODUCTS)
-    {
-        std::cout << "Inventory full \n";
-        return;  // No need for else, we exit early
-    }
-
-    std::cout << "Enter the details of the product you want to add: " << std::endl;
-
-    // Store each value at index [count]
-    std::cout << "Enter the id of the product: ";
-    std::cin >> products[count].id;
-
-    // Clear leftover newline before getline
+// Clears cin after invalid input
+void clearInput()
+{
+    std::cin.clear();
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-    std::cout << "Enter the name of the product: ";
-    std::getline(std::cin, products[count].name);
-
-    std::cout << "Enter the quantity of the product: ";
-    std::cin >> products[count].quantity;
-
-    std::cout << "Enter the price of the product: ";
-    std::cin >> products[count].price;
-
-    // Move to next available slot
-    count++;
 }
 
-// Displays all products currently stored
-// Loops from 0 to count (only valid products)
+// Reads an integer safely
+int readInt(const std::string& prompt)
+{
+    int value;
+
+    while (true)
+    {
+        std::cout << prompt;
+        std::cin >> value;
+
+        if (std::cin.fail())
+        {
+            std::cout << "Invalid input. Please enter a whole number.\n";
+            clearInput();
+        }
+        else
+        {
+            clearInput();
+            return value;
+        }
+    }
+}
+
+// Reads a double safely
+double readDouble(const std::string& prompt)
+{
+    double value;
+
+    while (true)
+    {
+        std::cout << prompt;
+        std::cin >> value;
+
+        if (std::cin.fail())
+        {
+            std::cout << "Invalid input. Please enter a valid number.\n";
+            clearInput();
+        }
+        else
+        {
+            clearInput();
+            return value;
+        }
+    }
+}
+
+// Reads a full line safely
+std::string readLine(const std::string& prompt)
+{
+    std::string text;
+    std::cout << prompt;
+    std::getline(std::cin, text);
+    return text;
+}
+
+void addProduct()
+{
+    if (count >= MAX_PRODUCTS)
+    {
+        std::cout << "Inventory full.\n";
+        return;
+    }
+
+    std::cout << "\nEnter the details of the product you want to add:\n";
+
+    products[count].id = readInt("Enter the id of the product: ");
+    products[count].name = readLine("Enter the name of the product: ");
+    products[count].quantity = readInt("Enter the quantity of the product: ");
+    products[count].price = readDouble("Enter the price of the product: ");
+
+    count++;
+
+    std::cout << "Product added successfully.\n";
+    std::cout << "-----------------------------\n";
+}
+
 void displayProducts()
 {
+    if (count == 0)
+    {
+        std::cout << "No products in inventory.\n";
+        std::cout << "-----------------------------\n";
+        return;
+    }
+
     for (int i = 0; i < count; i++)
     {
-        std::cout << "Product: " << i + 1 << "\n";
-
-        std::cout << "id: " << products[i].id << "\n";
+        std::cout << "Product " << i + 1 << "\n";
+        std::cout << "ID: " << products[i].id << "\n";
         std::cout << "Name: " << products[i].name << "\n";
         std::cout << "Quantity: " << products[i].quantity << "\n";
         std::cout << "Price: " << products[i].price << "\n";
-
-        std::cout << "-----------------------------" << std::endl;
+        std::cout << "-----------------------------\n";
     }
 }
 
-// Searches for a product by ID
 void searchProduct()
 {
-    int id;
-    bool found = false;  // helps track if we found it or not
-
-    std::cout << "Enter the id of the product you want to find: ";
-    std::cin >> id;
-
-    // Check each stored product
-    for (int j = 0; j < count; j++)
+    if (count == 0)
     {
-        if (id == products[j].id)
+        std::cout << "No products in inventory.\n";
+        std::cout << "-----------------------------\n";
+        return;
+    }
+
+    int id = readInt("Enter the id of the product you want to find: ");
+
+    for (int i = 0; i < count; i++)
+    {
+        if (products[i].id == id)
         {
-            std::cout << "The product you are looking for is: \n";
-
-            std::cout << "id: " << products[j].id << "\n";
-            std::cout << "Name: " << products[j].name << "\n";
-            std::cout << "Quantity: " << products[j].quantity << "\n";
-            std::cout << "Price: " << products[j].price << "\n";
-
-            std::cout << "-----------------------------" << std::endl;
-
-            found = true;
-            return;  // stop once we find it
+            std::cout << "The product you are looking for is:\n";
+            std::cout << "ID: " << products[i].id << "\n";
+            std::cout << "Name: " << products[i].name << "\n";
+            std::cout << "Quantity: " << products[i].quantity << "\n";
+            std::cout << "Price: " << products[i].price << "\n";
+            std::cout << "-----------------------------\n";
+            return;
         }
     }
 
-    // If loop ends and nothing matched
-    if (!found)
-    {
-        std::cout << "Product not found" << std::endl;
-        return;
-    }
+    std::cout << "Product not found.\n";
+    std::cout << "-----------------------------\n";
 }
 
-// Updates an existing product
 void updateProduct()
 {
-    int id;
-    bool found = false;
-
-    std::cout << "Enter the id of the product you want to update: ";
-    std::cin >> id;
-
-    // Find the product first
-    for (int k = 0; k < count; k++)
+    if (count == 0)
     {
-        if (id == products[k].id)
+        std::cout << "No products in inventory.\n";
+        std::cout << "-----------------------------\n";
+        return;
+    }
+
+    int id = readInt("Enter the id of the product you want to update: ");
+
+    for (int i = 0; i < count; i++)
+    {
+        if (products[i].id == id)
         {
-            // Show current data before updating
-            std::cout << "The product you want to update is: \n";
+            std::cout << "Current product details:\n";
+            std::cout << "ID: " << products[i].id << "\n";
+            std::cout << "Name: " << products[i].name << "\n";
+            std::cout << "Quantity: " << products[i].quantity << "\n";
+            std::cout << "Price: " << products[i].price << "\n";
+            std::cout << "-----------------------------\n";
 
-            std::cout << "id: " << products[k].id << "\n";
-            std::cout << "Name: " << products[k].name << "\n";
-            std::cout << "Quantity: " << products[k].quantity << "\n";
-            std::cout << "Price: " << products[k].price << "\n";
+            std::cout << "Enter the new details:\n";
+            products[i].id = readInt("Enter a new id: ");
+            products[i].name = readLine("Enter a new name: ");
+            products[i].quantity = readInt("Enter a new quantity: ");
+            products[i].price = readDouble("Enter a new price: ");
 
-            std::cout << "-----------------------------" << std::endl;
-
-            // Replace values at same index (no new product, just overwrite)
-            std::cout << "Enter the new details to update the product: " << std::endl;
-
-            std::cout << "Enter a new id: ";
-            std::cin >> products[k].id;
-
-            // Clear leftover newline before getline
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-            std::cout << "Enter a new name: ";
-            std::getline(std::cin, products[k].name);
-
-            std::cout << "Enter a new quantity: ";
-            std::cin >> products[k].quantity;
-
-            std::cout << "Enter a new price: ";
-            std::cin >> products[k].price;
-
-            std::cout << "Product updated successfully" << std::endl;
-
-            found = true;
+            std::cout << "Product updated successfully.\n";
+            std::cout << "-----------------------------\n";
             return;
         }
     }
 
-    if (!found)
-    {
-        std::cout << "Product not found, unable to update" << std::endl;
-        return;
-    }
+    std::cout << "Product not found. Unable to update.\n";
+    std::cout << "-----------------------------\n";
 }
 
-// Deletes a product from the system
 void deleteProduct()
 {
-    int id;
-    bool found = false;
-
-    std::cout << "Enter the id of the product you want to delete: ";
-    std::cin >> id;
-
-    // Find the product index
-    for (int m = 0; m < count; m++)
+    if (count == 0)
     {
-        if (id == products[m].id)
+        std::cout << "No products in inventory.\n";
+        std::cout << "-----------------------------\n";
+        return;
+    }
+
+    int id = readInt("Enter the id of the product you want to delete: ");
+
+    for (int i = 0; i < count; i++)
+    {
+        if (products[i].id == id)
         {
-            // Shift everything left to "remove" the product
-            // This avoids leaving empty gaps in the arrays
-            for (int n = m; n < count - 1; n++)
+            for (int j = i; j < count - 1; j++)
             {
-                products[n] = products[n + 1];
+                products[j] = products[j + 1];
             }
 
-            // Reduce total number of products
             count--;
 
-            std::cout << "Product successfully deleted \n";
-            std::cout << "-----------------------------" << std::endl;
-
-            found = true;
+            std::cout << "Product successfully deleted.\n";
+            std::cout << "-----------------------------\n";
             return;
         }
     }
 
-    if (!found)
-    {
-        std::cout << "Product not found, there is nothing to delete" << std::endl;
-        return;
-    }
+    std::cout << "Product not found. There is nothing to delete.\n";
+    std::cout << "-----------------------------\n";
 }
 
-// Main menu system
 int main()
 {
     int option;
 
-    // Runs continuously until user chooses to exit
     while (true)
     {
-        std::cout << "Welcome to the Inventory Management System" << std::endl;
-        std::cout << "1. Add Product" << std::endl;
-        std::cout << "2. Display Products" << std::endl;
-        std::cout << "3. Search Product" << std::endl;
-        std::cout << "4. Update Product" << std::endl;
-        std::cout << "5. Delete Product" << std::endl;
-        std::cout << "6. Exit" << std::endl;
+        std::cout << "\nWelcome to the Inventory Management System\n";
+        std::cout << "1. Add Product\n";
+        std::cout << "2. Display Products\n";
+        std::cout << "3. Search Product\n";
+        std::cout << "4. Update Product\n";
+        std::cout << "5. Delete Product\n";
+        std::cout << "6. Exit\n";
 
-        std::cout << "Please enter an option: ";
-        std::cin >> option;
+        option = readInt("Please enter an option: ");
 
-        // Each option triggers a specific function
         switch (option)
         {
             case 1:
@@ -242,12 +256,13 @@ int main()
                 break;
 
             case 6:
-                std::cout << "Thanks for using my program \n";
-                std::cout << "Exiting..." << std::endl;
-                return 0;  // ends program completely
+                std::cout << "Thanks for using my program.\n";
+                std::cout << "Exiting...\n";
+                return 0;
 
             default:
-                std::cout << "Please enter a valid option" << std::endl;
+                std::cout << "Please enter a valid option.\n";
+                std::cout << "-----------------------------\n";
         }
     }
 }
