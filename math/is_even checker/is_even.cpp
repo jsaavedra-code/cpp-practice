@@ -1,5 +1,5 @@
 #include <iostream>
-#include <limits>
+#include <limits> // include limits for numeric_limits
 
 bool is_even(int n) {  // boolean function to check if a number is even, returns true if n is even, false otherwise
     return n % 2 == 0;
