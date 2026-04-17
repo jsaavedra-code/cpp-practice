@@ -1,0 +1,41 @@
+# Rectangle Area Calculator (Inline Function in C++)
+
+This program calculates the area of a rectangle using an **inline function**. The implementation focuses on demonstrating how inline functions work in C++ rather than introducing complex logic.
+
+## 📌 Description
+
+The program prompts the user to enter the length and width of a rectangle, then calculates the area using an inline function.
+
+The key aspect of this program is the use of the `inline` keyword, which suggests to the compiler that the function should be expanded directly at the point of use instead of being called in the traditional way.
+
+## 🎯 Objective
+
+* Understand how inline functions work in C++
+* Compare inline functions with regular functions
+* Apply a simple mathematical formula using an optimized function approach
+
+## ⚙️ How It Works
+
+* The user enters:
+
+  * Length of the rectangle
+  * Width of the rectangle
+* The function `rectangleArea()` is declared as `inline`
+* The compiler may replace the function call with the expression `length * width`
+* The result is displayed in the console
+
+## 🧠 Concepts Used
+
+* Inline functions
+* Function calls vs inlining
+* Basic input/output (`cin`, `cout`)
+* Arithmetic operations
+
+## 📎 Notes
+
+The function used in this program is intentionally simple, making it a suitable candidate for inline expansion. While modern compilers often decide automatically whether to inline a function, the `inline` keyword is used here explicitly for demonstration purposes.
+
+## 👤 Author  
+John Saavedra  
+GitHub: [https://github.com/jsaavedra-code](https://github.com/jsaavedra-code)  
+
